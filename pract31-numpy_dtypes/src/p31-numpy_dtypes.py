@@ -1,7 +1,7 @@
 # A Comprehensive Guide to NumPy Data Types
 # What else is out there besides int32 and float64?
 
-import numpy as np
+import numpy as np # -> pip install numpy==1.26.4
 print(np.__version__) # test
 
 
@@ -186,6 +186,10 @@ np.datetime64('2021-12-24 18:14:23').item()
 np.datetime64('2021-12-24 18:14:23').item().month
 # = 12
 
+import numpy as np
+import datetime as dt
+import pandas as pd # -> pip install pandas==1.4.4
+print(pd.__version__) # test
 a = np.arange(np.datetime64('2021-01-20'),
                 np.datetime64('2021-12-20'),
                 np.timedelta64(90, 'D')); a
@@ -198,5 +202,225 @@ a = np.arange(np.datetime64('2021-01-20'),
 
 
 
-#import pandas as pd
-#s = pd.DatetimeIndex(a); s
+s = pd.DatetimeIndex(a); s
+# = DatetimeIndex(['2021-01-20', '2021-04-20', '2021-07-19', '2021-10-17'], 
+#       dtype='datetime64[ns]', freq=None)
+
+s.month
+# = Int64Index([1, 4, 7, 10], dtype='int64')
+
+def dt2cal(dt):
+    # allocate output
+    out = np.empty(dt.shape + (7,), dtype="u4")
+    # decompose calendar floors
+    Y, M, D, h, m, s = [dt.astype(f"M8[{x}]") for x in "YMDhms"]
+    out[..., 0] = Y + 1970 # Gregorian Year
+    out[..., 1] = (M - Y) + 1 # month
+    out[..., 2] = (D - M) + 1 # dat
+    out[..., 3] = (dt - D).astype("m8[h]") # hour
+    out[..., 4] = (dt - h).astype("m8[m]") # minute
+    out[..., 5] = (dt - m).astype("m8[s]") # second
+    out[..., 6] = (dt - s).astype("m8[us]") # microsecond
+    return out
+
+dt2cal(a)
+# = array([[2021,    1,   20,    0,    0,    0,    0],
+#       [2021,    4,   20,    0,    0,    0,    0],
+#       [2021,    7,   19,    0,    0,    0,    0],
+#       [2021,   10,   17,    0,    0,    0,    0]], dtype=uint32)
+
+np.array(['2020-03-01', '2022-03-01', '2024-03-01'], np.datetime64) - \
+    np.array(['2020-02-01', '2022-02-01', '2024-02-01'], np.datetime64)
+# = array([29, 28, 29], dtype='timedelta64[D]')
+
+np.datetime64('2016-12-31T23:59:60')
+# = ValueError: Seconds out of range in datetime string "2016-12-31T23:59:60"
+
+from astropy.time import Time # -> pip install astropy
+(Time('2017-01-01') - Time('2016-12-31 23:59')).sec
+# = 61.00000000001593
+
+import numpy as np
+np.datetime64('2262-01-01', 'ns') - np.datetime64('1678-01-01', 'ns')
+# = numpy.timedelta64(-17537673709551616,'ns')
+
+a = np.arange(np.datetime64('2022-01-01 12:00'),
+                np.datetime64('2022-01-03 12:00'),
+                np.timedelta64(1, 'D'))
+np.datetime_as_string(a)
+# = array(['2022-01-01T12:00', '2022-01-02T12:00'], dtype='<U35')
+
+np.datetime_as_string(a, timezone='local')
+# = array(['2022-01-01T13:00+0100', '2022-01-02T13:00+0100'], dtype='<U39')
+
+import pytz as pytz # pip install pytz==2022.6
+np.datetime_as_string(a, timezone=pytz.timezone('US/Eastern'))
+# = array(['2022-01-01T07:00-0500', '2022-01-02T07:00-0500'], dtype='<U39')
+
+
+
+# 6. COMBINATIONS THEREOF
+#       (Combinaciones de los mismos)
+# ------------------------------------
+
+a = np.array([[3,4], [2,7], [1,5], [2,4]]); a
+# = array([[3, 4],
+#       [2, 7],
+#       [1, 5],
+#       [2, 4]])
+
+# Ejemplo creado con función 'u2s' creada:
+#   (No consigo que la salida sea igual)!!
+# Definición de las funciones u2s y s2u
+
+import numpy as np
+
+def u2s(array):
+    structured_array = np.array(array, dtype=[('f0', '<i4'), ('f1', '<i4')])
+    return structured_array
+
+def s2u(array):
+    unstructured_array = array.view(np.int32).reshape(array.shape + (-1,))
+    return unstructured_array
+
+a = np.array([[3,4], [2,7], [1,5], [2,4]]); a
+b = u2s(a); b
+
+# = array([[3, 4],
+#       [2, 7],
+#       [1, 5],
+#       [2, 4]])
+
+# = array([[(3, 3), (4, 4)],
+#       [(2, 2), (7, 7)],
+#       [(1, 1), (5, 5)],
+#       [(2, 2), (4, 4)]], dtype=[('f0', '<i4'), ('f1', '<i4')])
+
+b.sort(order=['f1', 'f0']); b
+
+s2u(b)
+
+
+np.genfromtxt('pract31-numpy_dtypes/a.csv', dtype=None, encoding=None, delimiter=', ', names=True)
+# = array([('John', 21, 1.77,  True), ('Mary', 20, 1.63, False)],
+#      dtype=[('name', '<U4'), ('age', '<i8'), ('height', '<f8'), ('is_married', '?')])
+
+a = np.array([('John', 21, 1.77, True),
+               ('Mary', 20, 1.63, False)])
+np.core.records.fromarrays(zip(*a))
+# = rec.array([('John', '21', '1.77', 'True'),
+#           ('Mary', '20', '1.63', 'False')],
+#          dtype=[('f0', '<U4'), ('f1', '<U2'), ('f2', '<U4'), ('f3', '<U5')])
+
+a = np.array([('John', 21, 1.77, True),
+               ('Mary', 20, 1.63, False)],
+        dtype=[('name', 'U4'), ('age', int), ('height', float), ('is_married', bool)])
+np.core.records.fromarrays([
+      np.array(['John', 'Mary']),
+      np.array([21, 20]),
+      np.array([1.77, 1.63]),
+      np.array([True, False])])
+# = rec.array([('John', 21, 1.77,  True), ('Mary', 20, 1.63, False)],
+#          dtype=[('f0', '<U4'), ('f1', '<i8'), ('f2', '<f8'), ('f3', '?')])
+
+rgb = np.dtype([('x', np.uint8), ('y', np.uint8), ('z', np.uint8)])
+a = np.zeros(5, dtype=rgb); a
+# = array([(0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0)],
+#      dtype=[('x', 'u1'), ('y', 'u1'), ('z', 'u1')])
+
+a[0]
+# = (0, 0, 0)
+a[0]['x']
+# = 0
+a[0]['x'] = 10
+a
+# = array([(10, 0, 0), ( 0, 0, 0), ( 0, 0, 0), ( 0, 0, 0), ( 0, 0, 0)],
+#           dtype=[('x', 'u1'), ('y', 'u1'), ('z', 'u1')])
+a['z'] = 5
+a
+# = array([(10, 0, 5), ( 0, 0, 5), ( 0, 0, 5), ( 0, 0, 5), ( 0, 0, 5)],
+#      dtype=[('x', 'u1'), ('y', 'u1'), ('z', 'u1')])
+
+b = a.view(np.recarray)
+b
+# = rec.array([(10, 0, 5), ( 0, 0, 5), ( 0, 0, 5), ( 0, 0, 5), ( 0, 0, 5)],
+#               dtype=[('x', 'u1'), ('y', 'u1'), ('z', 'u1')])
+b[0].x
+# = 10
+b.y=7; b
+# = rec.array([(10, 7, 5), ( 0, 7, 5), ( 0, 7, 5), ( 0, 7, 5), ( 0, 7, 5)],
+#               dtype=[('x', 'u1'), ('y', 'u1'), ('z', 'u1')])
+
+
+a = np.random.rand(100000, 2)
+
+b = a.view(dtype=[('x', np.float64), ('y', np.float64)])
+
+c = np.recarray(buf=a, shape=len(a), dtype=
+                [('x', np.float64), ('y', np.float64)])
+
+s1 = 0
+for r in a:
+    s1 += (r[0]**2 + r[1]**2)**-1.5          # reference
+
+s2 = 0
+for r in b:
+    s2 += (r['x']**2 + r['y']**2)**-1.5      # 5x slower
+
+s3 = 0
+for r in c:
+    s3 += (r.x**2 + r.y**2)**-1.5            # 7x slower
+
+S1 = np.sum((a[:, 0]**2 + a[:, 1]**2)**-1.5) # 20x faster
+S2 = np.sum((b['x']**2 + b['y']**2)**-1.5)   # same as S1
+S3 = np.sum((c.x**2 + c.y**2)**-1.5)         # same as S1
+
+
+# 7. TYPE CHECKS
+#       (COMPROBACIONES DE TIPO)
+# ----------------
+
+
+a = np.array([1, 2, 3], dtype=np.int32)  # Especificar explícitamente el tipo de datos
+v = a[0]
+isinstance(v, np.int32)    # might be np.int64 on a different OS
+# = True
+
+isinstance(v, np.integer)        # true for all integers
+# = True
+isinstance(v, np.number)         # true for integers and floats
+# = True
+isinstance(v, np.floating)       # true for floats except complex
+# = False
+isinstance(v, np.complexfloating) # true for complex floats only
+# = False
+
+a.dtype == np.int32
+# = True
+a.dtype == np.int64
+# = False
+
+x.dtype in (np.half, np.single, np.double, np.longdouble)
+#False # -> NO COMPROBADO
+
+np.issubdtype(a.dtype, np.integer)
+# = True
+np.issubdtype(a.dtype, np.floating)
+# = False
+
+
+pd.api.types.is_integer_dtype(a.dtype)
+# = True
+pd.api.types.is_float_dtype(a.dtype)
+# = False
+
+np.typecodes
+# = {'Character': 'c', 'Integer': 'bhilqp', 'UnsignedInteger': 'BHILQP', 
+#   'Float': 'efdg', 'Complex': 'FDG', 'AllInteger': 'bBhHiIlLqQpP', 
+#   'AllFloat': 'efdgFDG', 'Datetime': 'Mm', 'All': '?bhilqpBHILQPefdgFDGSUVOMm'}
+
+a.dtype.char in np.typecodes['AllInteger']
+# = True
+a.dtype.char in np.typecodes['Datetime']
+# = False
+
