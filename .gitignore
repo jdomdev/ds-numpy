@@ -130,6 +130,8 @@ ENV/
 env.bak/
 venv.bak/
 
+!pract31-numpy_dtypes/src/p31-numpy_dtypes.py
+
 # Spyder project settings
 .spyderproject
 .spyproject
