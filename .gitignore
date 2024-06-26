@@ -2,6 +2,10 @@
 !pract31-numpy_dtypes/src/p31-numpy_dtypes.py
 !pract33-broadcasting/src/p33-broadcasting.ipynb
 
+pract31-numpy_dtypes/*
+pract33-broadcasting/*
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
