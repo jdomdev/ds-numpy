@@ -1,5 +1,5 @@
 # DS-Numpy
-Proyectos con las bibliotecas Numpy en el marco de la Ciencia de Datos
+Proyectos con la biblioteca Numpy en el marco de la Ciencia de Datos
 
 ## Temario
 
