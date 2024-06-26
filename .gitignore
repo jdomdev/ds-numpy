@@ -1,6 +1,9 @@
 # Exceptions
+!pract31-numpy_dtypes/src/*
 !pract31-numpy_dtypes/src/p31-numpy_dtypes.py
+!pract33-broadcasting/src/*
 !pract33-broadcasting/src/p33-broadcasting.ipynb
+
 
 pract31-numpy_dtypes/*
 pract33-broadcasting/*
