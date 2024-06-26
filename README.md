@@ -1,5 +1,5 @@
-# DS-Numpy_Pandas
-Proyectos con las bibliotecas Numpy y Pandas en el marco de la Ciencia de Datos
+# DS-Numpy
+Proyectos con las bibliotecas Numpy en el marco de la Ciencia de Datos
 
 ## Temario
 
