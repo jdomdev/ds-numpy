@@ -301,7 +301,7 @@ b.sort(order=['f1', 'f0']); b
 s2u(b)
 
 
-np.genfromtxt('pract31-numpy_dtypes/a.csv', dtype=None, encoding=None, delimiter=', ', names=True)
+np.genfromtxt('pract31-dtypes/data/a.csv', dtype=None, encoding=None, delimiter=', ', names=True)
 # = array([('John', 21, 1.77,  True), ('Mary', 20, 1.63, False)],
 #      dtype=[('name', '<U4'), ('age', '<i8'), ('height', '<f8'), ('is_married', '?')])
 
