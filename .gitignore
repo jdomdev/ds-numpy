@@ -1,12 +1,15 @@
 # Exceptions
-!pract31-numpy_dtypes/src/*
-!pract31-numpy_dtypes/src/p31-numpy_dtypes.py
-!pract33-broadcasting/src/*
-!pract33-broadcasting/src/p33-broadcasting.ipynb
+#!pract31-dtypes/src/*
+#!pract31-dtypes/src/p31-dtypes.py
+#!pract32-ejercicios_basicos/notebook/*
+#!pract32-ejercicios_basicos/notebook/p32-ejs_basicos.ipynb
+#!pract33-broadcasting/notebook/*
+#!pract33-broadcasting/notebook/p33-broadcasting.ipynb
 
 
-pract31-numpy_dtypes/*
-pract33-broadcasting/*
+#pract31-dtypes/*
+#pract32-ejercicios_basicos/*
+#pract33-broadcasting/*
 
 
 # Byte-compiled / optimized / DLL files
