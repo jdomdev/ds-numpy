@@ -67,5 +67,5 @@ Este proyecto está licenciado bajo la Licencia Pública General de GNU v3.0.
 Consulta el archivo LICENSE para más detalles.
 Con esta licencia, los colaboradores y usuarios pueden modificar y redistribuir el software bajo los términos de la GPLv3.
 
-<div align="center"> <img src="https://www.gnu.org/graphics/gplv3-127x51.png" alt="GPLv3 Logo" width="150"> </div> ```
+<div align="center"> <img src="https://www.gnu.org/graphics/gplv3-127x51.png" alt="GPLv3 Logo" width="150"> </div> 
 
